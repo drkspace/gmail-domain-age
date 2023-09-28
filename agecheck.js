@@ -11,6 +11,10 @@ const COLLAPSE_PAR_NUM = 4
 // What parent level the domain info box needs to be at when the email is expanded
 const EXP_PAR_NUM = 10
 
+const LABEL_COLORS = {"Good":"green",
+                      "Warning": "orange",
+                      "Suspicious":"red"}
+
 // Modified from https://stackoverflow.com/a/22790025
 function getDomainInfo(domain2Check) {
     var Httpreq = new XMLHttpRequest(); // a new request
@@ -25,11 +29,17 @@ function getDomainInfo(domain2Check) {
 } 
 
 function getRegInfo(data){
-    info = {};
+    let info = {};
 
     data["events"].forEach(element => {
-        info[element["eventAction"]] = (new Date(Date.parse(element["eventDate"]))).toLocaleTimeString(undefined, {year: 'numeric', month: 'long', day: 'numeric' }
-        )
+        tmp = new Date(Date.parse(element["eventDate"]))
+        
+        let ea = element["eventAction"]
+        
+        info[ea] = {}
+        info[ea]["date"] = tmp.toLocaleTimeString(undefined, {year: 'numeric', month: 'long', day: 'numeric' })
+        info[ea]["diff"] = Date.now() - tmp.getTime()
+        
     });
     
     return info;
@@ -55,16 +65,40 @@ function addLabel(ele){
         addr = ele.getAttribute("email");
         domain = addr.split("@")[1];
 
-        info = getRegInfo(getDomainInfo(domain));
         d = document.createElement("div");
         d.style.border = "black"
-        d.style.backgroundColor = "red"
+        d.style.backgroundColor = LABEL_COLORS["Good"]
         d.style["border-radius"] = "10px";
         d.style["text-align"] = "center";
         d.style.color = "black"
 
-        d.innerText = "This domain was created on "+info["registration"];
-
+        tmp = getDomainInfo(domain);
+        console.log(tmp)
+        if(tmp != null){
+        info = getRegInfo(tmp);
+        
+        d.innerText = "This domain was created on "+info["registration"]["date"];
+        diffDays = info["registration"]["diff"] / (1000 * 3600 * 24);
+        
+        if(diffDays < 1){
+            d.style.backgroundColor = LABEL_COLORS["Suspicious"]
+            d.innerText += " (Less than a day ago!!!)"
+        }
+        else if(diffDays < 7){
+            d.style.backgroundColor = LABEL_COLORS["Suspicious"]
+            d.innerText += " (Less than a week ago!!!)"
+        }
+        else if(diffDays < 365.25){
+            d.style.backgroundColor = LABEL_COLORS["Warning"]
+            d.innerText += " (Less than a year ago)"
+        }
+        else{
+            d.innerText += " (More than a year ago)"
+        }
+        }
+        else{
+            d.innerText = "Weird, this domain does not exist"
+        }
         parNum = EXP_PAR_NUM;
 
         if(ele.classList.contains("bco")){
