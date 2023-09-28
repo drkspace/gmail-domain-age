@@ -1,0 +1,16 @@
+{
+    "manifest_version": 2,
+    "name": "Gmail Domain Age Checker",
+    "version": "0.1",
+  
+    "description": "Checks for the age of domains that email you.",
+
+  
+    "content_scripts": [
+      {
+        "matches": ["*://mail.google.com/*"],
+        "js": ["agecheck.js"]
+      }
+    ]
+  }
+  
