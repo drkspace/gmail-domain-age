@@ -15,6 +15,7 @@ const LABEL_COLORS = {"Good":"green",
                       "Warning": "orange",
                       "Suspicious":"red"}
 
+// Get the domain info from verisign
 // Modified from https://stackoverflow.com/a/22790025
 function getDomainInfo(domain2Check) {
     var Httpreq = new XMLHttpRequest(); // a new request
@@ -28,6 +29,7 @@ function getDomainInfo(domain2Check) {
     return JSON.parse(Httpreq.responseText);
 } 
 
+// Get the registration time info from the API
 function getRegInfo(data){
     let info = {};
 
@@ -45,6 +47,8 @@ function getRegInfo(data){
     return info;
 }
 
+
+// Get the spans that contain the email headers
 function getEmailBlocks(onlyVis){
 
     spans = Array.from(document.getElementsByClassName(EMAIL_SPAN_CLASS));
@@ -56,11 +60,11 @@ function getEmailBlocks(onlyVis){
 
 }
 
-function getEmailAddresses(emailBlocks){
-    return emailBlocks.map((ele)=>ele.getAttribute("email"))
-}
-
+// Add a label to an email
+// Will add attribute to element to only 1 label is added
 function addLabel(ele){
+
+    // Test if element already has label
     if(ele.getAttribute("data-haslabel")!=="true"){
         addr = ele.getAttribute("email");
         domain = addr.split("@")[1];
@@ -80,6 +84,7 @@ function addLabel(ele){
         d.innerText = "This domain was created on "+info["registration"]["date"];
         diffDays = info["registration"]["diff"] / (1000 * 3600 * 24);
         
+        // Different text/color depending on the time difference
         if(diffDays < 1){
             d.style.backgroundColor = LABEL_COLORS["Suspicious"]
             d.innerText += " (Less than a day ago!!!)"
@@ -110,8 +115,12 @@ function addLabel(ele){
             par = par.parentElement
         }
 
+        // Insert label in correct spot
         par.insertAdjacentElement("afterend", d)
         ele.setAttribute("data-haslabel", "true")
+        
+        // Add event listener for if the email is expanded or collapsed
+        // The other form of the email doesn't exist in the DOM until it needs to be seen
         par.addEventListener("click", event=>{
             window.setTimeout(()=>{
             spans = getEmailBlocks(false)
