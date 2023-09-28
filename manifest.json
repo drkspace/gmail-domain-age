@@ -4,12 +4,13 @@
     "version": "0.1",
   
     "description": "Checks for the age of domains that email you.",
-
+    "permissions": ["tabs", "webRequest", "<all_urls>"],
   
     "content_scripts": [
       {
         "matches": ["*://mail.google.com/*"],
-        "js": ["agecheck.js"]
+        "js": ["agecheck.js"],
+        "run_at": "document_end"
       }
     ]
   }

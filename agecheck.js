@@ -33,9 +33,6 @@ function getRegInfo(data){
     return info;
 }
 
-// d = Get("google.com")
-// console.log(getRegInfo(d))
-
 function getEmailBlocks(onlyVis){
 
     spans = Array.from(document.getElementsByClassName(EMAIL_SPAN_CLASS));
@@ -88,6 +85,24 @@ function addLabel(ele){
     }
 }
 
-spans = getEmailBlocks(false)
-console.log(spans)
-spans.forEach(addLabel)
+
+// Select the <div> element with id "loading"
+const loadingDiv = document.getElementById('loading');
+
+// Create a MutationObserver to watch for when the loading div becomes hidden
+const observer = new MutationObserver((mutationsList, observer) => {
+  mutationsList.forEach((mutation) => {
+    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+      // Check if the "display" style property has changed to "none" (hidden)
+      if (loadingDiv.style.display === 'none') {
+        // The <div> with id "loading" is now hidden
+        spans = getEmailBlocks(false)
+        spans.forEach(addLabel)
+      } 
+    }
+  });
+});
+
+// Start observing the <div> element for changes in the 'style' attribute
+const config = { attributes: true };
+observer.observe(loadingDiv, config);
