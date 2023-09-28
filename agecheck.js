@@ -5,12 +5,14 @@ const API_BASE = "https://rdap.verisign.com/com/v1/domain/"
 // I'm not sure if this is consistent or the best way to select all of the emails
 const EMAIL_SPAN_CLASS = 'gD'
 
+// What parent level the domain info box needs to be at when the email is collapsed
 const COLLAPSE_PAR_NUM = 4
 
+// What parent level the domain info box needs to be at when the email is expanded
 const EXP_PAR_NUM = 10
 
 // Modified from https://stackoverflow.com/a/22790025
-function Get(domain2Check) {
+function getDomainInfo(domain2Check) {
     var Httpreq = new XMLHttpRequest(); // a new request
     Httpreq.open("GET", API_BASE+domain2Check, false);
     Httpreq.send(null);
@@ -53,7 +55,7 @@ function addLabel(ele){
         addr = ele.getAttribute("email");
         domain = addr.split("@")[1];
 
-        info = getRegInfo(Get(domain));
+        info = getRegInfo(getDomainInfo(domain));
         d = document.createElement("div");
         d.style.border = "black"
         d.style.backgroundColor = "red"
@@ -106,3 +108,8 @@ const observer = new MutationObserver((mutationsList, observer) => {
 // Start observing the <div> element for changes in the 'style' attribute
 const config = { attributes: true };
 observer.observe(loadingDiv, config);
+
+window.addEventListener('popstate', function(event) {
+    spans = getEmailBlocks(false)
+    spans.forEach(addLabel)
+  });
