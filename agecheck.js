@@ -131,8 +131,15 @@ function addLabel(ele){
 }
 
 
+
 // Select the <div> element with id "loading"
 const loadingDiv = document.getElementById('loading');
+
+// The div with folded emails
+// Will be filled in the following mutation observer
+let accordEle = null;
+
+let obs = null;
 
 // Create a MutationObserver to watch for when the loading div becomes hidden
 const observer = new MutationObserver((mutationsList, observer) => {
@@ -143,6 +150,29 @@ const observer = new MutationObserver((mutationsList, observer) => {
         // The <div> with id "loading" is now hidden
         spans = getEmailBlocks(false)
         spans.forEach(addLabel)
+
+        let tmp = document.getElementsByClassName("kQ bg adv")
+        if (tmp.length > 0){
+            accordEle = tmp[0]
+            obs = new MutationObserver((mutationsList, observer) => {
+
+                mutationsList.forEach((mutation) => {
+                  if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    // Check if the "display" style property has changed to "none" (hidden)
+                    if (accordEle.className == "kv bg") {
+
+                        // The <div> with id "loading" is now hidden
+                      spans = getEmailBlocks(false)
+                      spans.forEach(addLabel)
+                      obs.disconnect()
+                    } 
+                  }
+                });
+              });
+
+            obs.observe(accordEle, { attributes: true, attributeFilter: ['class'] });
+            
+        }
       } 
     }
   });
@@ -151,6 +181,10 @@ const observer = new MutationObserver((mutationsList, observer) => {
 // Start observing the <div> element for changes in the 'style' attribute
 const config = { attributes: true };
 observer.observe(loadingDiv, config);
+
+
+
+
 
 window.addEventListener('popstate', function(event) {
     spans = getEmailBlocks(false)
