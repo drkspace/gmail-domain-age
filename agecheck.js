@@ -146,9 +146,12 @@ const loadingDiv = document.getElementById('loading');
 // Will be filled in the following mutation observer
 let accordEle = null;
 
+// The mutation observer for the accordion
+// Will be filled in the following mutation observer
 let obs = null;
 
 // Create a MutationObserver to watch for when the loading div becomes hidden
+// Will create another mutation observer if there is an accordion in the email chain
 const observer = new MutationObserver((mutationsList, observer) => {
     mutationsList.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
