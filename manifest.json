@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Gmail Domain Age Checker",
-    "version": "0.2",
+    "version": "0.3",
   
     "description": "Checks for the age of domains that email you.",
     "permissions": ["tabs", "webRequest", "<all_urls>"],
