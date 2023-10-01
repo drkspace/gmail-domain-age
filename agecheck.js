@@ -84,6 +84,11 @@ function addLabel(ele) {
     if (ele.getAttribute("data-haslabel") !== "true") {
         addr = ele.getAttribute("email");
         domain = addr.split("@")[1];
+        
+        // Remove extra bits of the domain (issue #7)
+        tmp = domain.split(".")
+        domain = tmp[tmp.length-2]+"."+tmp[tmp.length-1]
+
 
         d = document.createElement("div");
         d.style.border = "black"
