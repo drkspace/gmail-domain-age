@@ -2,6 +2,9 @@
 // The base url for the domain info API
 const API_BASE = "https://rdap.verisign.com/com/v1/domain/"
 
+// The base URL for domains with "-" in them
+const API_BASE_DASH = "https://rdap.publicinterestregistry.org/rdap/domain/"
+
 // I'm not sure if this is consistent or the best way to select all of the emails
 const EMAIL_SPAN_CLASS = 'gD'
 
@@ -25,7 +28,14 @@ const ACCORD_UNFOLDED_CLASS = "kv bg"
 // Modified from https://stackoverflow.com/a/22790025
 function getDomainInfo(domain2Check) {
     var Httpreq = new XMLHttpRequest(); // a new request
-    Httpreq.open("GET", API_BASE + domain2Check, false);
+
+    let reqURL = API_BASE + domain2Check
+    if(domain2Check.includes("-"))
+    {
+        reqURL = API_BASE_DASH + domain2Check
+    }
+
+    Httpreq.open("GET", reqURL, false);
     Httpreq.send(null);
 
     if (Httpreq.responseText.length == 0) {
@@ -83,7 +93,7 @@ function addLabel(ele) {
         d.style.color = "black"
 
         tmp = getDomainInfo(domain);
-        console.log(tmp)
+        
         if (tmp != null) {
             info = getRegInfo(tmp);
 
