@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Gmail Domain Age Checker",
-    "version": "0.4",
+    "version": "0.5",
   
     "description": "Checks for the age of domains that email you.",
     "permissions": ["tabs", "https://mail.google.com/*", "webRequest", "https://rdap.verisign.com/com/v1/domain/*", "webRequest", "https://rdap.publicinterestregistry.org/rdap/domain/*"],
